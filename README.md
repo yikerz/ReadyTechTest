@@ -22,3 +22,4 @@ This project implements an HTTP API for controlling an imaginary internet-connec
 ## Non-functional Requirements
 
 1. **Implementation**: The solution is implemented in .NET Core, ensuring compatibility and flexibility.
+2. **Testing**: The project includes comprehensive unit tests and integration tests to cover various scenarios, ensuring the correctness and robustness of the API.
