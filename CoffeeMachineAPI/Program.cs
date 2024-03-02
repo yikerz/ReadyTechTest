@@ -18,6 +18,7 @@ namespace CoffeeMachineAPI
             builder.Services.AddSwaggerGen();
             builder.Services.AddSingleton<ICoffeeMachine, CoffeeMachine>();
             builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+            builder.Services.AddSingleton<IWeatherChecker, WeatherChecker>();
 
             var app = builder.Build();
 

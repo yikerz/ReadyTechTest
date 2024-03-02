@@ -11,12 +11,16 @@ namespace CoffeeMachineAPI.Controllers
         protected APIResponse _response;
         private readonly ICoffeeMachine _coffeeMachine;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IWeatherChecker _weatherChecker;
 
-        public CoffeeMachineAPIController(ICoffeeMachine coffeeMachine, IDateTimeProvider dateTimeProvider)
+        public CoffeeMachineAPIController(ICoffeeMachine coffeeMachine, 
+            IDateTimeProvider dateTimeProvider,
+            IWeatherChecker weatherChecker)
         {
             _response = new();
             _coffeeMachine = coffeeMachine;
             _dateTimeProvider = dateTimeProvider;
+            _weatherChecker = weatherChecker;
         }
         // GET endpoint for brewing coffee
         [HttpGet]
@@ -24,9 +28,10 @@ namespace CoffeeMachineAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
         [ProducesResponseType(StatusCodes.Status418ImATeapot)]
-        public ActionResult<APIResponse> Get()
+        public async Task<ActionResult<APIResponse>> GetAsync()
         {
             DateTime now = _dateTimeProvider.Now();
+            float? temp = await _weatherChecker.GetTempAsync();
             // Check if it's April 1st
             if (now.Month == 4 && now.Day == 1)
             {
@@ -38,7 +43,7 @@ namespace CoffeeMachineAPI.Controllers
             if (isBrewSuccess)
             {
                 // Coffee brewed successfully
-                _response.message = "Your piping hot coffee is ready";
+                _response.message = temp != null && temp > 30 ? "Your refreshing iced coffee is ready" : "Your piping hot coffee is ready";
                 _response.prepared = DateTime.Now;
                 return Ok(_response);
             }
